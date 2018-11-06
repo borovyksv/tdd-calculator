@@ -22,19 +22,19 @@ public class CalculatorOperatorsTest {
 
     @Test
     public void testSubtraction() {
-        assertThat(calculator.sub(first, second), is(-1));
-        assertThat(calculator.sub(-1, 1), is(-2));
-        assertThat(calculator.sub(0, 0), is(0));
-        assertThat(calculator.sub(15, 0), is(15));
+        assertThat(calculator.subtract(first, second), is(-1));
+        assertThat(calculator.subtract(-1, 1), is(-2));
+        assertThat(calculator.subtract(0, 0), is(0));
+        assertThat(calculator.subtract(15, 0), is(15));
     }
 
     @Test
     public void testDivision() {
-        assertThat(calculator.div(first, second), is(0));
-        assertThat(calculator.div(-1, 1), is(-1));
+        assertThat(calculator.divide(first, second), is(0));
+        assertThat(calculator.divide(-1, 1), is(-1));
         try {
-            assertThat(calculator.div(0, 0), is(0));
-            assertThat(calculator.div(15, 0), is(15));
+            assertThat(calculator.divide(0, 0), is(0));
+            assertThat(calculator.divide(15, 0), is(15));
         } catch (Exception e) {
             System.out.println(e.getMessage());
             assertEquals(e.getClass(), ArithmeticException.class);
@@ -43,18 +43,10 @@ public class CalculatorOperatorsTest {
 
     @Test
     public void testMultiplication() {
-        assertThat(calculator.mult(first, second), is(2));
-        assertThat(calculator.mult(-1, 1), is(-1));
-        assertThat(calculator.mult(0, 0), is(0));
-        assertThat(calculator.mult(15, 0), is(0));
-    }
-
-    @Test
-    public void testClearWhitespaces() {
-        String input = "1 + 1";
-        String result = calculator.clearWhitespaces(input);
-        assertThat(result, is("1+1"));
-
+        assertThat(calculator.multiple(first, second), is(2));
+        assertThat(calculator.multiple(-1, 1), is(-1));
+        assertThat(calculator.multiple(0, 0), is(0));
+        assertThat(calculator.multiple(15, 0), is(0));
     }
 
     @Test

@@ -1,62 +1,110 @@
 package model;
 
-import java.util.Optional;
+import java.util.*;
 
 public class Model implements Calculable {
-
+    @Override
     public Integer add(Integer first, Integer second) {
         return first + second;
     }
 
-    public Integer sub(Integer first, Integer second) {
+    @Override
+    public Integer subtract(Integer first, Integer second) {
         return first - second;
     }
 
-    public Integer div(Integer first, Integer second) throws ArithmeticException {
+    @Override
+    public Integer divide(Integer first, Integer second) throws ArithmeticException {
         return first / second;
     }
 
-    public Integer mult(Integer first, Integer second) {
+    @Override
+    public Integer multiple(Integer first, Integer second) {
         return first * second;
     }
 
     @Override
     public Integer calculate(String input) {
-        return null;
+        List<String> elements = getCalculationElements(input);
+        calculate(elements);
+
+        return getResult(elements);
     }
 
     @Override
-    public Integer calculate(String first, String second, String operator) {
-
-        return 0;
-    }
-
-    public Integer calculate(Integer first, Integer second, char charOperator) {
-        Optional<Operators> operator = Operators.getOperator(charOperator);
+    public Integer calculate(Integer first, Integer second, String stringOperator) {
+        Optional<Operators> operator = Operators.getOperator(stringOperator);
         if (operator.isPresent()) {
             switch (operator.get()) {
                 case PLUS:
                     return add(first, second);
                 case MINUS:
-                    return sub(first, second);
+                    return subtract(first, second);
                 case OBELUS:
-                    return div(first, second);
+                    return divide(first, second);
                 case TIMES:
-                    return mult(first, second);
+                    return multiple(first, second);
                 default:
-                    throw new UnsupportedOperationException("Unsupported Operator: " + charOperator);
+                    throw new UnsupportedOperationException("Unsupported Operator: " + stringOperator);
             }
         } else {
-            throw new UnknownOperatorException("Unknown operator: " + charOperator);
+            throw new UnknownOperatorException("Unknown operator: " + stringOperator);
         }
     }
 
-    public Integer calculate(Integer first, Integer second, String operator) {
-        return calculate(first, second, operator.charAt(0));
+    private void calculate(List<String> elements) {
+        checkParentheses(elements);
+        Operators.getPriorities().forEach(priority -> calculateByPriority(elements, priority));
     }
 
-    public String clearWhitespaces(String input) {
+    private Integer calculate(String first, String second, String operator) {
+        return calculate(Integer.valueOf(first), Integer.valueOf(second), operator);
+    }
+
+    /** Split the input into an array of strings using operator delimiters "[-+/*()]" from enum {@link Operators}
+     *   Example input = "10 + 20 ( 30 * 40 )" into {"10", "+", "20", "(", "30", "*", "40", ")"} */
+    private List<String> getCalculationElements(String input) {
+        input = clearWhitespaces(input);
+        String[] split = input.split(String.format("((?<=%1$s)|(?=%1$s))", Operators.getOperatorDelimiters()));
+        return new LinkedList<>(Arrays.asList(split));
+    }
+
+    private Integer getResult(List<String> elements) {
+        String result = Objects.requireNonNull(elements.get(0), "Wrong number of elements after calculation:" +
+                elements.size() + " , but must be 1");
+        return Integer.valueOf(result);
+    }
+
+    private void checkParentheses(List<String> elements) {
+        if (elements.contains(Operators.OPEN_PARENTHESIS.getSymbol())) {
+            int open = elements.indexOf(Operators.OPEN_PARENTHESIS.getSymbol());
+            int close = elements.lastIndexOf(Operators.CLOSE_PARENTHESIS.getSymbol());
+            List<String> subElements = elements.subList(open, close + 1);
+            removeParenthesis(subElements);
+            calculate(subElements);
+        }
+    }
+
+    private void removeParenthesis(List<String> subElements) {
+        subElements.remove(0);
+        subElements.remove(subElements.size() - 1);
+    }
+
+    private void calculateByPriority(List<String> split, Integer priority) {
+        for (int i = 0; i < split.size(); i++) {
+            String current = split.get(i);
+            if (current.length() == 1 && Operators.contains(current, priority)) {
+                int prevIndex = i - 1;
+                String first = String.valueOf(split.remove(prevIndex));
+                String operator = String.valueOf(split.remove(prevIndex));
+                String second = String.valueOf(split.remove(prevIndex));
+                Integer calculate = calculate(first, second, operator);
+                split.add(prevIndex, calculate.toString());
+            }
+        }
+    }
+
+    private String clearWhitespaces(String input) {
         return input.replaceAll("\\s+", "");
     }
-
 }
