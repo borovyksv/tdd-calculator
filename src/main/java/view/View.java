@@ -12,7 +12,7 @@ public interface View extends Observable {
     List<Observer> observers = new LinkedList<>();
 
     void run();
-    void printResult(Integer result);
+    void printResult(Double result);
 
     default Queue<Input> getInputs() {
         return inputs;

@@ -9,8 +9,8 @@ public class ConsoleView implements View {
     public void run() {
         while (!done) {
             Scanner scanner = new Scanner(System.in);
-            int first = getNumber(scanner, "Enter first number:");
-            int second = getNumber(scanner, "Enter second number:");
+            Double first = getNumber(scanner, "Enter first number:");
+            Double second = getNumber(scanner, "Enter second number:");
             String operator = getOperator(scanner, "Enter operator:");
 
             addInput(first, second, operator);
@@ -19,13 +19,13 @@ public class ConsoleView implements View {
         }
     }
 
-    private void addInput(int first, int second, String operator) {
+    private void addInput(Double first, Double second, String operator) {
         inputs.add(new Input(first, second, operator));
     }
 
-    private int getNumber(Scanner scanner, String message) {
+    private Double getNumber(Scanner scanner, String message) {
         print(message);
-        return scanner.nextInt();
+        return scanner.nextDouble();
     }
 
     private String getOperator(Scanner scanner, String message) {
@@ -39,7 +39,7 @@ public class ConsoleView implements View {
         return !"Y".equalsIgnoreCase(scanner.next());
     }
 
-    public void printResult(Integer result) {
+    public void printResult(Double result) {
         print("Your result = " + result);
     }
 

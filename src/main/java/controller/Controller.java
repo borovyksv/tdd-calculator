@@ -23,14 +23,14 @@ public class Controller implements Observer {
     public void update() {
         Input input = null;
         while ((input = view.getInputs().poll()) != null) {
-            Integer result = getCalculatedResult(input);
+            Double result = getCalculatedResult(input);
             if (result != null) {
                 view.printResult(result);
             }
         }
     }
 
-    private Integer getCalculatedResult(Input input) {
+    private Double getCalculatedResult(Input input) {
         try {
             return model.calculate(input.getFirstNumber(), input.getSecondNumber(), input.getOperator());
         } catch (Exception e) {
